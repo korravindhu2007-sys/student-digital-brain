@@ -1,0 +1,10 @@
+rules:
+  - id: no-cloud-ai-secrets
+    message: Do not add hosted AI API credentials to this offline-first app.
+    severity: ERROR
+    languages: [python]
+    pattern-either:
+      - pattern: openai.$X
+      - pattern: anthropic.$X
+      - pattern: $X = "sk-..."
+

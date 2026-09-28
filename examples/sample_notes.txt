@@ -1,0 +1,55 @@
+# Sample Biology Notes - Cell Division
+
+## Introduction to Cell Division
+
+Cell division is the process by which a parent cell divides into two or more daughter cells. It is a fundamental process in all living organisms.
+
+### Types of Cell Division
+
+1. **Mitosis** - Results in two identical daughter cells with the same number of chromosomes as the parent cell. Used for growth and repair.
+
+2. **Meiosis** - Results in four genetically unique daughter cells with half the number of chromosomes. Used for sexual reproduction.
+
+## The Cell Cycle
+
+The cell cycle consists of several phases:
+
+- **G1 Phase**: Cell growth and normal function
+- **S Phase**: DNA replication
+- **G2 Phase**: Preparation for mitosis
+- **M Phase**: Mitosis and cytokinesis
+
+## Mitosis Stages
+
+Mitosis proceeds through four distinct stages:
+
+1. **Prophase**: Chromosomes condense and become visible. The nuclear envelope begins to break down.
+
+2. **Metaphase**: Chromosomes align at the middle (metaphase plate) of the cell.
+
+3. **Anaphase**: Sister chromatids separate and move to opposite poles of the cell.
+
+4. **Telophase**: Nuclear envelopes reform around the separated chromosomes.
+
+## Key Concepts
+
+- **Chromosomes**: Structures containing DNA and proteins that carry genetic information
+- **Chromatids**: Each half of a duplicated chromosome
+- **Centromere**: The point where two sister chromatids are joined
+- **Spindle fibers**: Protein structures that pull chromosomes apart during cell division
+
+## Importance of Cell Division
+
+Cell division is essential for:
+- Growth of multicellular organisms
+- Repair of damaged tissues
+- Asexual reproduction in some organisms
+- Production of gametes for sexual reproduction
+
+## Cancer and Cell Division
+
+Cancer is characterized by uncontrolled cell division. This occurs when:
+- Cell cycle checkpoints fail
+- DNA damage is not repaired
+- Cells ignore signals to stop dividing
+- Cells gain the ability to invade other tissues

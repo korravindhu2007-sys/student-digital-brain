@@ -1,0 +1,48 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: Ruff format
+        entry: uv run ruff format --check app.py pages components services src/neuronote tests/test_backend_api.py tests/test_database.py tests/test_e2e_backend.py scripts
+        language: system
+        pass_filenames: false
+      - id: ruff-lint
+        name: Ruff lint
+        entry: uv run ruff check app.py pages components services src/neuronote tests/test_backend_api.py tests/test_database.py tests/test_e2e_backend.py scripts
+        language: system
+        pass_filenames: false
+      - id: mypy
+        name: Mypy type check
+        entry: uv run mypy
+        language: system
+        pass_filenames: false
+      - id: bandit
+        name: Bandit security scan
+        entry: uv run bandit -q -r app.py pages components services src/neuronote scripts
+        language: system
+        pass_filenames: false
+      - id: detect-secrets
+        name: Detect secrets
+        entry: uv run detect-secrets scan app.py pages components services src/neuronote scripts tests .gitlab-ci.yml pyproject.toml README.md --baseline .secrets.baseline
+        language: system
+        pass_filenames: false
+      - id: semgrep
+        name: Semgrep rules configured
+        entry: python -c "from pathlib import Path; assert Path('.semgrep.yml').exists()"
+        language: system
+        pass_filenames: false
+      - id: vulture
+        name: Vulture dead-code scan
+        entry: uv run vulture src/neuronote services scripts --min-confidence 80 --exclude src/neuronote/api.py
+        language: system
+        pass_filenames: false
+      - id: pyupgrade
+        name: Pyupgrade configured
+        entry: python -c "import pyupgrade; print('pyupgrade available')"
+        language: system
+        pass_filenames: false
+      - id: pytest
+        name: Pytest suite with coverage threshold
+        entry: uv run pytest
+        language: system
+        pass_filenames: false

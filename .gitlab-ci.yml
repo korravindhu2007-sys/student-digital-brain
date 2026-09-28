@@ -1,0 +1,106 @@
+stages:
+  - format
+  - lint
+  - type_check
+  - test
+  - coverage
+  - security
+  - audit
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: always
+
+default:
+  image: python:3.12-slim
+  before_script:
+    - python -m pip install --upgrade pip
+    - python -m pip install uv
+    - uv sync --dev
+    - python -c "from pathlib import Path; Path('.tmp-test').mkdir(exist_ok=True)"
+
+format:
+  stage: format
+  script:
+    - uv run ruff format --check app.py pages components services src/neuronote tests/test_backend_api.py tests/test_database.py tests/test_e2e_backend.py scripts
+
+lint:
+  stage: lint
+  script:
+    - uv run ruff check app.py pages components services src/neuronote tests/test_backend_api.py tests/test_database.py tests/test_e2e_backend.py scripts
+
+type_check:
+  stage: type_check
+  script:
+    - uv run mypy
+
+test:
+  stage: test
+  script:
+    - uv run python -m compileall app.py pages components services src/neuronote tests/test_backend_api.py tests/test_database.py tests/test_e2e_backend.py scripts
+    - uv run pytest --no-cov --basetemp=.tmp-test/unit
+
+coverage:
+  stage: coverage
+  script:
+    - uv run pytest --basetemp=.tmp-test/coverage
+  coverage: '/TOTAL\s+\d+\s+\d+\s+(\d+)%/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - coverage.xml
+
+streamlit_smoke:
+  stage: test
+  script:
+    - uv run python scripts/local_audit.py streamlit-pages
+
+offline_pdf_pipeline:
+  stage: test
+  script:
+    - uv run python scripts/local_audit.py offline-pdf
+
+secret_scan:
+  stage: security
+  script:
+    - uv run detect-secrets scan app.py pages components services src/neuronote scripts tests .gitlab-ci.yml pyproject.toml README.md --baseline .secrets.baseline
+
+security_scan:
+  stage: security
+  script:
+    - uv run bandit -q -r app.py pages components services src/neuronote scripts
+
+sqlite_schema:
+  stage: audit
+  script:
+    - uv run python scripts/local_audit.py sqlite-schema
+
+no_cloud_ai:
+  stage: audit
+  script:
+    - uv run python scripts/local_audit.py no-cloud-ai
+
+repo_metadata:
+  stage: audit
+  script:
+    - uv run python scripts/local_audit.py required-files
+    - uv run python scripts/local_audit.py license
+    - uv run python scripts/local_audit.py gitignore
+    - uv run python scripts/local_audit.py docs-commands
+
+compliance_configs:
+  stage: audit
+  script:
+    - |
+      python -c "from pathlib import Path; required=['.semgrep.yml','.gitleaks.toml','cliff.toml','.specify/constitution.md','.specify/memory/constitution.md','.specify/templates/spec-template.md','.specify/templates/plan-template.md','.specify/templates/tasks-template.md','specs/offline-pdf-study-workflow/spec.md','specs/offline-pdf-study-workflow/plan.md','specs/offline-pdf-study-workflow/tasks.md']; missing=[p for p in required if not Path(p).exists()]; raise SystemExit(('Missing compliance configs: %s' % missing) if missing else 0)"
+
+dependency_audit:
+  stage: audit
+  script:
+    - uv export --dev --format requirements-txt --no-hashes -o audit-requirements.txt
+    - uv run pip-audit -r audit-requirements.txt

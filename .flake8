@@ -1,0 +1,12 @@
+[flake8]
+max-line-length = 120
+extend-ignore = E203,E402,E501,W391,W503
+exclude =
+    .git,
+    .venv,
+    .uv-cache,
+    .tmp-test,
+    data,
+    models,
+    tools,
+    src/neuronote.egg-info

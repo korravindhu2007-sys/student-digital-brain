@@ -1,0 +1,110 @@
+[project]
+name = "neuronote"
+version = "0.3.1"
+description = "Offline-first CPU AI study assistant that converts PDFs, images, audio, and text into structured SQLite knowledge."
+requires-python = ">=3.10"
+license = "AGPL-3.0-or-later"
+dependencies = [
+    "PyMuPDF>=1.24",
+    "streamlit>=1.36",
+]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.7.9",
+    "detect-secrets>=1.5",
+    "flake8>=7.0",
+    "mypy>=1.10",
+    "pip-audit>=2.7",
+    "pre-commit>=3.7",
+    "pylint>=3.2",
+    "pytest>=8.2",
+    "pytest-cov>=5.0",
+    "pyupgrade>=3.16",
+    "ruff>=0.5",
+    "vulture>=2.11",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+addopts = "--basetemp=.tmp-test --cov=src/neuronote --cov-report=term-missing --cov-report=xml --cov-fail-under=40"
+python_files = [
+    "test_backend_api.py",
+    "test_database.py",
+    "test_e2e_backend.py",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+exclude = [
+    ".git",
+    ".venv",
+    ".uv-cache",
+    "data",
+    "models",
+    "tools",
+    "src/api.py",
+    "src/config.py",
+    "src/database",
+    "src/graph",
+    "src/ingestion",
+    "src/llm",
+    "src/models",
+    "src/neuronote.egg-info",
+    "src/ocr",
+    "src/parser",
+    "src/search",
+    "src/services",
+    "src/speech",
+    "src/utils",
+    "tests/test_parser.py",
+    "tests/test_services.py",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+check_untyped_defs = true
+files = ["src/neuronote"]
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv", "data", "models", "tools"]
+skips = ["B404", "B603"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/neuronote"]
+
+[tool.coverage.report]
+fail_under = 40
+show_missing = true
+skip_covered = true
+
+[tool.vulture]
+paths = ["src/neuronote", "services", "scripts"]
+exclude = ["src/neuronote.egg-info", "src/neuronote/api.py"]
+min_confidence = 80
+
+[tool.pylint.main]
+ignore = ["data", "models", "tools"]
+ignore-paths = ["src/neuronote.egg-info"]
+
+[tool.pylint.messages_control]
+disable = [
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "too-many-lines",
+]

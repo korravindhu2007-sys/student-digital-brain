@@ -1,0 +1,8 @@
+title = "NeuroNote Gitleaks Rules"
+
+[allowlist]
+description = "Allow local demo and documentation placeholders."
+paths = [
+  '''.env.example''',
+  '''USER_MANUAL.md''',
+]
